@@ -40,7 +40,7 @@ public class YodafyClienteTCP {
 			
 			// Enviamos el array por el outputStream;
 			//////////////////////////////////////////////////////
-			outputStream.write(buferEnvio,0,buferEnvio.length());
+			outputStream.write(buferEnvio,0,buferEnvio.length);
 			//////////////////////////////////////////////////////
 			
 			// Aunque le indiquemos a TCP que queremos enviar varios arrays de bytes, sólo
@@ -53,9 +53,8 @@ public class YodafyClienteTCP {
 			// Leemos la respuesta del servidor. Para ello le pasamos un array de bytes, que intentará
 			// rellenar. El método "read(...)" devolverá el número de bytes leídos.
 			//////////////////////////////////////////////////////
-			byte []buferRecepcion = new byte[256];
 
-			int bytesLeidos = inpuStream.read(buferRecepcion);
+			bytesLeidos = inputStream.read(buferRecepcion);
 			//////////////////////////////////////////////////////
 			
 			// MOstremos la cadena de caracteres recibidos:
