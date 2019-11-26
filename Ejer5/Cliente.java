@@ -1,6 +1,6 @@
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -14,13 +14,13 @@ public class Cliente {
     Scanner teclado = new Scanner(System.in);
     final String COMANDO_TERMINACION = "salir()";
     int port = 42069;
-    String ip = localhost;
+    String ip = "localhost";
 
     // Función para levantar la conexión desde el cliente
     public void levantarConexion() {
         try {
-            socket = new Socket(ip, port);
-            System.out.println("Conectado a :" + socket.getInetAddress().getHostName());
+            socketServidor = new Socket(ip, port);
+            System.out.println("Conectado a: " + socketConexion.getInetAddress().getHostName());
         } catch (Exception e) {
             System.out.println("Excepción al levantar conexión: " + e.getMessage());
             System.exit(0);
@@ -84,7 +84,7 @@ public class Cliente {
         String st = "";
         try {
             do {
-                st = (String) bufferDeEntrada.readUTF();
+                st = (String) bufferEntrada.readUTF();
                 System.out.println("\n[Servidor] => " + st);
                 System.out.print("\n[Tú] => ");
             } while (!st.equals(COMANDO_TERMINACION));
@@ -97,7 +97,7 @@ public class Cliente {
     public void escribirDatos() {
         String entrada = "";
         while (true) {
-            System.out.print("[Usted] => ");
+            System.out.print("[Tú] => ");
             entrada = teclado.nextLine();
             if(entrada.length() > 0)
                 enviar(entrada);

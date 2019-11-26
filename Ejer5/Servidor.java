@@ -1,6 +1,6 @@
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -22,7 +22,7 @@ public class Servidor {
             socketServidor = new ServerSocket(port);
             socketConexion = socketServidor.accept();
 
-            System.out.println("Conexión establecida");
+            System.out.println("Conexión establecida con el cliente");
 
         } catch (IOException e) {
             System.err.println("Error al escuchar en el puerto " + port);
@@ -93,7 +93,7 @@ public class Servidor {
             public void run() {
                 while (true) {
                     try {
-                        levantarConexion(port);
+                        levantarConexion();
                         flujos();
                         recibirDatos();
                     } finally {
@@ -111,7 +111,7 @@ public class Servidor {
         Servidor s = new Servidor();
         Scanner sc = new Scanner(System.in);
 
-        s.ejecutarConexion(port);
+        s.ejecutarConexion();
         s.escribirDatos();
     }
 }
