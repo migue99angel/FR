@@ -31,21 +31,22 @@ public class YodafyClienteTCP {
 
 			socketServicio = new Socket(host,port);
 			
-			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
-			PrintWriter outPrint = new PrintWriter(socketServicio.getOutputStream(), true);
+			InputStream inputStream = socketServicio.getInputStream();
+            OutputStream outputStream = socketServicio.getOutputStream();
 			
-			// Si queremos enviar una cadena de caracteres por un OutputStream, hay que pasarla primero
-			// a un array de bytes:
+			// Si queremos enviar una cadena de caracteres por un OutputStream
 			buferEnvio = new String("Al monte del volcán debes ir sin demora");
 
-			do{
-				System.out.println("Sending data");
-				outPrint.println(buferEnvio);
-				buferRecepcion = inReader.readLine();
-				System.out.println("Receiving data");
-				System.out.println("Data size: "+buferRecepcion.lenght());
-				System.out.println("Content: "+buferRecepcion);
-			}while(true);
+			PrintWriter outPrinter = new PrintWriter(outputStream, true);
+            outPrinter.println(buferEnvio);
+
+			outPrinter.flush();
+			
+			BufferedReader inReader = new BufferedReader(new InputStreamReader(inputStream));
+            buferRecepcion = inReader.readLine();
+
+			System.out.println("\nContenido recibido: " + buferRecepcion + "\n");
+			
 			socketServicio.close();
 
 		} catch (UnknownHostException e) {

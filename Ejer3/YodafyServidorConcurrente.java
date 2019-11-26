@@ -20,7 +20,7 @@ public class YodafyServidorConcurrente {
 		
 		try {
 			// Abrimos el socket en modo pasivo, escuchando el en puerto indicado por "port"
-			socketServidor = new ServerSocket(puerto);
+			socketServidor = new ServerSocket(port);
 			do {
 				
 				// Aceptamos una nueva conexión
@@ -30,7 +30,7 @@ public class YodafyServidorConcurrente {
 				// argumento el nuevo socket, para que realice el procesamiento
 				// Este esquema permite que se puedan usar hebras más fácilmente.
 				activeThreads++;
-				ProcesadorYodafy procesador = new ProcesadorYodafyConcurrente(socketServicio,activeThreads);
+				ProcesadorYodafyConcurrente procesador = new ProcesadorYodafyConcurrente(socketConexion,activeThreads);
 				procesador.procesa();
 				
 			} while (true);

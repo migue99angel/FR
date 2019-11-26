@@ -4,8 +4,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Random;
-
-
+import java.util.Random;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.Thread;
 //
 // Nota: si esta clase extendiera la clase Thread, y el procesamiento lo hiciera el método "run()",
 // ¡Podríamos realizar un procesado concurrente! 
@@ -18,7 +21,7 @@ public class ProcesadorYodafyConcurrente extends Thread {
 	private InputStream inputStream;
 	// stream de escritura (por aquí se envía los datos al cliente)
 	private OutputStream outputStream;
-	
+
 	// Para que la respuesta sea siempre diferente, usamos un generador de números aleatorios.
 	private Random random;
 	
@@ -37,28 +40,22 @@ public class ProcesadorYodafyConcurrente extends Thread {
 		System.out.println("Receiving data");
 		
 		try {
-			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
-            PrintWriter outPrint = new PrintWriter(socketServicio.getOutputStream(), true);
-			do{
-				receiveData = inReade.readLine();
-				System.out.println("La hebra nº "+this.ID+" ha recibido una de cadena de tamaño"+receiveData.length());
-				String answer = yodaDo(receiveData);
-				outPrint.println(answer);
-				System.out.println("La hebra nº "+this.ID+" ha envidado su respuesta.");
-			}while(true);
-			inputStream=socketServicio.getInputStream();
-			outputStream=socketServicio.getOutputStream();
+            inputStream = socketServicio.getInputStream();
+            outputStream = socketServicio.getOutputStream();
 
-			/*
-			// Creamos un String a partir de un array de bytes de tamaño "bytesRecibidos":
-			String peticion=new String(datosRecibidos,0,bytesRecibidos);
-			// Yoda reinterpreta el mensaje:
-			String respuesta=yodaDo(peticion);
-			// Convertimos el String de respuesta en una array de bytes:
-			datosEnviar=respuesta.getBytes();*/
-			
+            BufferedReader inReader = new BufferedReader(new InputStreamReader(inputStream));
+            receiveData = inReader.readLine();
+
+            String respuesta = yodaDo(receiveData);
+
+			PrintWriter outPrinter = new PrintWriter(outputStream, true);
+			Thread.sleep(5000);
+            outPrinter.println(respuesta);
+			System.out.println("Sending data,  thread: "+this.ID);
 		} catch (IOException e) {
 			System.err.println("Error al obtener los flujso de entrada/salida.");
+		}catch (InterruptedException excep) {
+			System.err.println("Error en el retardo.");
 		}
 
 	}
