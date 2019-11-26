@@ -15,8 +15,8 @@ public class YodafyClienteTCP {
 
 	public static void main(String[] args) {
 		
-		byte []buferEnvio;
-		byte []buferRecepcion=new byte[256];
+		String buferEnvio;
+		String buferRecepcion;
 		int bytesLeidos=0;
 		
 		// Nombre del host donde se ejecuta el servidor:
@@ -31,46 +31,23 @@ public class YodafyClienteTCP {
 
 			socketServicio = new Socket(host,port);
 			
-			InputStream inputStream = socketServicio.getInputStream();
-			OutputStream outputStream = socketServicio.getOutputStream();
+			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
+			PrintWriter outPrint = new PrintWriter(socketServicio.getOutputStream(), true);
 			
 			// Si queremos enviar una cadena de caracteres por un OutputStream, hay que pasarla primero
 			// a un array de bytes:
-			buferEnvio="Al monte del volcán debes ir sin demora".getBytes();
-			
-			// Enviamos el array por el outputStream;
-			//////////////////////////////////////////////////////
-			outputStream.write(buferEnvio,0,buferEnvio.length());
-			//////////////////////////////////////////////////////
-			
-			// Aunque le indiquemos a TCP que queremos enviar varios arrays de bytes, sólo
-			// los enviará efectivamente cuando considere que tiene suficientes datos que enviar...
-			// Podemos usar "flush()" para obligar a TCP a que no espere para hacer el envío:
-			//////////////////////////////////////////////////////
-			outputStream.flush();
-			//////////////////////////////////////////////////////
-			
-			// Leemos la respuesta del servidor. Para ello le pasamos un array de bytes, que intentará
-			// rellenar. El método "read(...)" devolverá el número de bytes leídos.
-			//////////////////////////////////////////////////////
-			byte []buferRecepcion = new byte[256];
+			buferEnvio = new String("Al monte del volcán debes ir sin demora");
 
-			int bytesLeidos = inpuStream.read(buferRecepcion);
-			//////////////////////////////////////////////////////
-			
-			// MOstremos la cadena de caracteres recibidos:
-			System.out.println("Recibido: ");
-			for(int i=0;i<bytesLeidos;i++){
-				System.out.print((char)buferRecepcion[i]);
-			}
-			
-			// Una vez terminado el servicio, cerramos el socket (automáticamente se cierran
-			// el inpuStream  y el outputStream)
-			//////////////////////////////////////////////////////
+			do{
+				System.out.println("Sending data");
+				outPrint.println(buferEnvio);
+				buferRecepcion = inReader.readLine();
+				System.out.println("Receiving data");
+				System.out.println("Data size: "+buferRecepcion.lenght());
+				System.out.println("Content: "+buferRecepcion);
+			}while(true);
 			socketServicio.close();
-			//////////////////////////////////////////////////////
-			
-			// Excepciones:
+
 		} catch (UnknownHostException e) {
 			System.err.println("Error: Nombre de host no encontrado.");
 		} catch (IOException e) {

@@ -8,24 +8,19 @@ import java.net.Socket;
 // YodafyServidorIterativo
 // (CC) jjramos, 2012
 //
-public class YodafyServidorIterativo {
+public class YodafyServidorConcurrente {
 
 	public static void main(String[] args) {
 	
 		// Socket
 		ServerSocket socketServidor;
 		Socket socketConexion = null;
-		// Puerto de escucha
 		int port = 42069;
-		// array de bytes auxiliar para recibir o enviar datos.
-		byte []buffer=new byte[256];
-		// Número de bytes leídos
-		int bytesLeidos=0;
+		int activeThreads=0;
 		
 		try {
 			// Abrimos el socket en modo pasivo, escuchando el en puerto indicado por "port"
 			socketServidor = new ServerSocket(puerto);
-			
 			do {
 				
 				// Aceptamos una nueva conexión
@@ -34,7 +29,8 @@ public class YodafyServidorIterativo {
 				// Creamos un objeto de la clase ProcesadorYodafy, pasándole como 
 				// argumento el nuevo socket, para que realice el procesamiento
 				// Este esquema permite que se puedan usar hebras más fácilmente.
-				ProcesadorYodafy procesador = new ProcesadorYodafy(socketServicio);
+				activeThreads++;
+				ProcesadorYodafy procesador = new ProcesadorYodafyConcurrente(socketServicio,activeThreads);
 				procesador.procesa();
 				
 			} while (true);

@@ -1,7 +1,4 @@
-//
-// YodafyServidorIterativo
-// (CC) jjramos, 2012
-//
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,9 +10,10 @@ import java.util.Random;
 // Nota: si esta clase extendiera la clase Thread, y el procesamiento lo hiciera el método "run()",
 // ¡Podríamos realizar un procesado concurrente! 
 //
-public class ProcesadorYodafy {
+public class ProcesadorYodafyConcurrente extends Thread {
 	// Referencia a un socket para enviar/recibir las peticiones/respuestas
 	private Socket socketServicio;
+	private int ID;
 	// stream de lectura (por aquí se recibe lo que envía el cliente)
 	private InputStream inputStream;
 	// stream de escritura (por aquí se envía los datos al cliente)
@@ -25,47 +23,39 @@ public class ProcesadorYodafy {
 	private Random random;
 	
 	// Constructor que tiene como parámetro una referencia al socket abierto en por otra clase
-	public ProcesadorYodafy(Socket socketServicio) {
+	public ProcesadorYodafyConcurrente(Socket socketServicio,int ID) {
 		this.socketServicio=socketServicio;
 		random=new Random();
+		this.ID = ID;
 	}
 	
 	
 	// Aquí es donde se realiza el procesamiento realmente:
-	void procesa(){
-		
-		// Como máximo leeremos un bloque de 1024 bytes. Esto se puede modificar.
-		byte [] datosRecibidos=new byte[1024];
-		int bytesRecibidos=0;
-		
-		// Array de bytes para enviar la respuesta. Podemos reservar memoria cuando vayamos a enviarka:
-		byte [] datosEnviar;
-		
+	public void procesa(){
+
+		String receiveData = new String();
+		System.out.println("Receiving data");
 		
 		try {
-			// Obtiene los flujos de escritura/lectura
+			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
+            PrintWriter outPrint = new PrintWriter(socketServicio.getOutputStream(), true);
+			do{
+				receiveData = inReade.readLine();
+				System.out.println("La hebra nº "+this.ID+" ha recibido una de cadena de tamaño"+receiveData.length());
+				String answer = yodaDo(receiveData);
+				outPrint.println(answer);
+				System.out.println("La hebra nº "+this.ID+" ha envidado su respuesta.");
+			}while(true);
 			inputStream=socketServicio.getInputStream();
 			outputStream=socketServicio.getOutputStream();
-			
-			// Lee la frase a Yodaficar:
-			////////////////////////////////////////////////////////
-			// read ... datosRecibidos.. (Completar)
-			////////////////////////////////////////////////////////
-			
-			// Yoda hace su magia:
+
+			/*
 			// Creamos un String a partir de un array de bytes de tamaño "bytesRecibidos":
 			String peticion=new String(datosRecibidos,0,bytesRecibidos);
 			// Yoda reinterpreta el mensaje:
 			String respuesta=yodaDo(peticion);
 			// Convertimos el String de respuesta en una array de bytes:
-			datosEnviar=respuesta.getBytes();
-			
-			// Enviamos la traducción de Yoda:
-			////////////////////////////////////////////////////////
-			// ... write ... datosEnviar... datosEnviar.length ... (Completar)
-			////////////////////////////////////////////////////////
-			
-			
+			datosEnviar=respuesta.getBytes();*/
 			
 		} catch (IOException e) {
 			System.err.println("Error al obtener los flujso de entrada/salida.");
